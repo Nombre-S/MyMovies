@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'mymovies.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "django_bootstrap",
+        "NAME": "django_test",
         "USER": "ubuntu",
         "PASSWORD": "123",
         "HOST": "127.0.0.1",
