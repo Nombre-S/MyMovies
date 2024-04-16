@@ -8,20 +8,17 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
-
 class Job(models.Model):
     name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
 
-
 class Person(models.Model):
     name = models.CharField(max_length=128)
 
     def __str__(self):
         return self.name
-
 
 class Movie(models.Model):
     title = models.CharField(max_length=200)
@@ -38,12 +35,10 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
 
-
 class MovieCredit(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
-
 
 class MovieReview(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
