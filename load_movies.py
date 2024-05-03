@@ -28,7 +28,7 @@ def add_movie(movie_id):
     print(r.json())
     m = r.json()
 
-    conn = psycopg2.connect("dbname=django_test user=ubuntu password=123")
+    conn = psycopg2.connect("dbname=django_test user=soware password=270802Alex")
     cur = conn.cursor()
 
     sql = 'SELECT * FROM movies_movie WHERE title = %s'
