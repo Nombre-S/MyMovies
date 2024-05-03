@@ -1,9 +1,21 @@
-{% if movie_list %}
-    <ul>
-    {% for movie in movie_list%}
-        <li><a href="/movies/{{ movie.id }}/">{{ movie.title }}</a></li>
+{% extends "movies/base.html" %}
+
+{% block article %}
+
+<main>
+    <a href="your_name/"> Pon tu nombre </a>
+  {% if movie_list %}
+  <ul>
+    {% for movie in movie_list %}
+    <li>
+      <a href="/movies/{{ movie.id }}">{{ movie.title }} &lpar;{{ movie.release_date.year }}&rpar;</a>
+    </li>
     {% endfor %}
-    </ul>
-{% else %}
-    <p>No movies are available.</p>
-{% endif %}
+  </ul>
+  {% else %}
+    <p>No movies are available</p>
+  {% endif %}
+</main>
+
+{% endblock article %}
+
