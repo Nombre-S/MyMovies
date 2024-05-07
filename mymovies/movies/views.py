@@ -1,9 +1,33 @@
 from django.db.models.fields import forms
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import authenticate, login
 from movies.models import Movie
-from .forms import NameForm
+from django.contrib import messages
+from .forms import NameForm, LoginForm
 # Create your views here.
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('index')  # Redirige a la vista index si las credenciales son válidas
+            else:
+                form.add_error(None, 'Nombre de usuario o contraseña incorrectos.')
+                # Agrega un mensaje de error utilizando Django messages framework
+                messages.error(request, 'Nombre de usuario o contraseña incorrectos.')
+    else:
+        form = LoginForm()
+    
+    return render(request, 'movies/login.html', {'form': form})
+
+
 
 def get_name(request):
     # if this is a POST request we need to process the form data
