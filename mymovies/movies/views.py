@@ -41,6 +41,8 @@ def get_name(request):
             # ...
             # redirect to a new URL:
             return render(request, "movies/name_ok.html", {"form": form})
+        else:
+            return render(request, "movies/name_ok.html", {"form": form})
 
     # if a GET (or any other method) we'll create a blank form
     else:
