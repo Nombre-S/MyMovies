@@ -1,51 +1,42 @@
 {% extends "movies/base.html" %}
 
 {% block article %}
-
-<article>
-
-  <h1>{{ movie.title }} &lpar;{{ movie.release_date|date:"Y" }}&rpar;</h1>
-  <p>{{ movie.overview }}</p>
-  {# <img src="{% static 'movies/assets/img'|add:movie.poster_path %}" alt=""> #}
-  <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{ movie.poster_path }}" alt="">
-
-  <div class="flex h-[32rem] bg-slate-200 my-4">
-    <header>
-        <h1 class="movie-title"> {{ movie.title }} </h1>
-      <div class="movie-info">
-        <p> 12/19/2014 -</p>
-        <ul class="movie-genre">
-          <li> History | </li>
-          <li> Drama | </li>
-          <li> Thriller | </li>
-          <li> War </li>
-        </ul>
-        <p>- 1h 53m</p>
-      </div>
-
-      <h1>Overview</h1>
-      <p>{{ movie.overview }}</p>
-
-      <details>
-        <summary>Production Details</summary>
-        <p>Budget: ${{ movie.budget }}</p>
-        <p>Revenue: {{ movie.revenue }}</p>
-      </details>
-    </header>
+<article class="container mx-auto p-6 bg-white shadow-lg rounded-lg">
+  <div class="flex justify-center mb-6">
+    <h1 class="text-3xl font-bold">{{ movie.title }} <span class="text-gray-600">({{ movie.release_date|date:"Y" }})</span></h1>
   </div>
 
-  <!-- <h1>Top Billed Cast</h1>
-  <div class="cast">
-    <div class="cast-item">
-      <img src="img/cumberbatch.jpg" alt="Benedict Cumberbatch photo">
-      <h1> Benedict Cumberbatch</h1>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-1 flex justify-center">
+      <img class="rounded-lg shadow-lg w-32 md:w-48" src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{ movie.poster_path }}" alt="{{ movie.title }}">
     </div>
-    <div class="cast-item">
-      <img src="img/knightley.jpg" alt="Keira Knightley photo">
-      <h1> Keira Knightley</h1>
-    </div>
-  -->
-</article>
 
+    <div class="md:col-span-2">
+      <div class="mb-4">
+        <h2 class="text-2xl font-semibold">Overview</h2>
+        <p class="text-gray-700">{{ movie.overview }}</p>
+      </div>
+
+      <div class="mb-4">
+        <h2 class="text-2xl font-semibold">Details</h2>
+        <ul class="flex flex-wrap gap-2 text-gray-600">
+          <li class="bg-gray-200 rounded px-2 py-1">Released: {{ movie.release_date|date:"m/d/Y" }}</li>
+          <li class="bg-gray-200 rounded px-2 py-1">Runtime: {{ movie.running_time }} mins</li>
+          {% for genre in movie.genres.all %}
+            <li class="bg-gray-200 rounded px-2 py-1">{{ genre.name }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <details class="bg-gray-100 p-4 rounded-lg shadow-inner">
+        <summary class="cursor-pointer font-semibold text-gray-700">Production Details</summary>
+        <div class="mt-2 space-y-2">
+          <p>Budget: ${{ movie.budget|floatformat:0 }}</p>
+          <p>Revenue: ${{ movie.revenue|floatformat:0 }}</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</article>
 {% endblock article %}
 
