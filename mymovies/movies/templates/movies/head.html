@@ -1,0 +1,32 @@
+<header class="flex flex-col items-center mt-5">
+    <div class="relative inline-block group">
+        <h1 class="text-3xl font-medium text-center">
+            <a href="{% url 'index' %}">My Movies</a>
+        </h1>
+        <div
+            class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        </div>
+    </div>
+    <nav class="mt-2">
+        <ul class="flex space-x-20">
+            {% if user.is_authenticated %}
+            <li>
+                <p class="text-blue-700 hover:text-indigo-700" >{{ user.username }}</p>
+            </li>
+            {% else %}
+            <li>
+                <a class="text-blue-700 hover:text-indigo-700" href="{% url 'login_view' %}">Login</a>
+            </li>
+            {% endif %}
+            <li>
+                <a class="text-blue-700 hover:text-indigo-700" href="{% url 'index' %}">Movies</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li>
+                <a class="text-gray-400" href="{% url 'logout_view' %}">Log Out</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+
