@@ -6,3 +6,7 @@ class NameForm(forms.Form):
                                 error_messages={"required": "El nombre es requerido"},
                                 widget=forms.Textarea(attrs={"class":"text-gray-400", "rows": 3, "cols": 60}))
 
+class MovieReviewForm(forms.Form):
+    movie_id = forms.IntegerField(widget=forms.HiddenInput())
+    rating = forms.IntegerField(label='Rating', min_value=1, max_value=100)
+    description = forms.CharField(label='Description', widget=forms.Textarea)
