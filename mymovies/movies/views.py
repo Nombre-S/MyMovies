@@ -4,8 +4,23 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from movies.models import Movie
 from django.contrib import messages
-from .forms import NameForm
+from .forms import NameForm, MovieReviewForm
 # Create your views here.
+
+def movie_review(request, movie_id):
+    if request.method == 'POST':
+        form = MovieReviewForm(request.POST)
+        if form.is_valid():
+            movie_id = form.cleaned_data['movie_id']
+            rating = form.cleaned_data['rating']
+            description = form.cleaned_data['description']
+            movie = Movie.objects.get(pk=movie_id)
+            user = request.user
+            MovieReviewForm.objects.create(movie=movie, user=user, rating=rating, description=description)
+            return redirect('movie_detail', movie_id)
+    else:
+        form = MovieReviewForm()
+    return render(request, 'movies/review_form.html', {'form': form})
 
 
 def login_view(request):
