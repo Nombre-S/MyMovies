@@ -24,7 +24,7 @@ def add_movie(movie_id):
 
 
 
-    r = requests.get(f'https://api.themoviedb.org/3/movie/{movie_id}?language=es-ES', headers=headers) 
+    r = requests.get(f'https://api.themoviedb.org/3/movie/{movie_id}?language=en-US', headers=headers) 
     print(r.json())
     m = r.json()
 
@@ -37,7 +37,7 @@ def add_movie(movie_id):
 
     print(movie_exists)
 
-    r = requests.get(f'https://api.themoviedb.org/3/movie/{movie_id}/credits?language=es-ES', headers=headers) 
+    r = requests.get(f'https://api.themoviedb.org/3/movie/{movie_id}/credits?language=en-US', headers=headers) 
     credits = r.json()
 
 
