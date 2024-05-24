@@ -8,7 +8,7 @@
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="md:col-span-1 flex justify-center">
-      <img class="rounded-lg shadow-lg w-64 h-auto" src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{ movie.poster_path }}" alt="{{ movie.title }}">
+      <img class="rounded-lg shadow-lg w-64 h-96 object-cover" src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{ movie.poster_path }}" alt="{{ movie.title }}">
     </div>
 
     <div class="md:col-span-2">
@@ -35,6 +35,39 @@
           <p>Revenue: ${{ movie.revenue|floatformat:0 }}</p>
         </div>
       </div>
+
+      <!-- Space for Review -->
+      <div class="bg-gray-100 p-4 rounded-lg shadow-inner mt-6">
+        <h2 class="cursor-pointer font-semibold text-gray-700">Add a Review</h2>
+        <form action="{% url 'movie_review' movie.id %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="movie_id" value="{{ movie.id }}">
+          <label for="rating">Rating:</label>
+          <input type="number" id="rating" name="rating" min="1" max="100" required class="block w-full mb-4">
+          <label for="description">Description:</label>
+          <textarea id="description" name="description" rows="4" cols="50" class="block w-full mb-4"></textarea>
+          <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">Submit Review</button>
+        </form>
+      </div>
+      <!-- End Space for Review -->
+
+      <!-- Display Existing Reviews -->
+      <div class="bg-gray-100 p-4 rounded-lg shadow-inner mt-6">
+        <h2 class="cursor-pointer font-semibold text-gray-700">Existing Reviews</h2>
+        {% if reviews %}
+          <ul>
+            {% for review in reviews %}
+              <li>
+                <p>Rating: {{ review.rating }}</p>
+                <p>Description: {{ review.description }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No reviews available.</p>
+        {% endif %}
+      </div>
+      <!-- End Display Existing Reviews -->
     </div>
   </div>
 </article>

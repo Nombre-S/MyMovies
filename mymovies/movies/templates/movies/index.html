@@ -1,21 +1,21 @@
 {% extends "movies/base.html" %}
 
 {% block article %}
-
-<main>
-    <a href="/movies/your_name/"> Pon tu nombre </a>
+<main class="container mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
   {% if movie_list %}
-  <ul>
     {% for movie in movie_list %}
-    <li>
-      <a href="/movies/{{ movie.id }}">{{ movie.title }} &lpar;{{ movie.release_date.year }}&rpar;</a>
-    </li>
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <a href="/movies/{{ movie.id }}">
+          <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{ movie.poster_path }}" alt="{{ movie.title }}" class="w-full h-auto">
+        </a>
+        <div class="p-4">
+          <h2 class="text-xl font-semibold">{{ movie.title }} <span class="text-gray-600">({{ movie.release_date.year }})</span></h2>
+        </div>
+      </div>
     {% endfor %}
-  </ul>
   {% else %}
-    <p>No movies are available</p>
+    <p class="text-center">No movies are available</p>
   {% endif %}
 </main>
-
 {% endblock article %}
 
