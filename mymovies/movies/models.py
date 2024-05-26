@@ -16,6 +16,8 @@ class Job(models.Model):
 
 class Person(models.Model):
     name = models.CharField(max_length=128)
+    poster_path = models.URLField(blank=True, null=True)
+    biography = models.CharField(max_length=2000, blank=True)
 
     def __str__(self):
         return self.name
@@ -34,6 +36,14 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_average_rating(self):
+        reviews = self.moviereview_set.all()
+        if reviews.exists():
+            total_rating = sum(review.rating for review in reviews)
+            return total_rating / reviews.count()
+        return None
+
 
 class MovieCredit(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
