@@ -3,13 +3,25 @@
 {% block article %}
 <main class="container mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
   {% if movie_list %}
-    {% for movie in movie_list %}
-      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-        <a href="/movies/{{ movie.id }}">
-          <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{ movie.poster_path }}" alt="{{ movie.title }}" class="w-full h-auto">
+    {% for item in movie_list|dictsortreversed:"movie.release_date" %}
+      <div class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
+        <a href="/movies/{{ item.movie.id }}">
+          <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{ item.movie.poster_path }}" alt="{{ item.movie.title }}" class="w-full h-auto">
         </a>
-        <div class="p-4">
-          <h2 class="text-xl font-semibold">{{ movie.title }} <span class="text-gray-600">({{ movie.release_date.year }})</span></h2>
+        <div class="p-4 flex flex-col flex-grow justify-between">
+          <div>
+            <h2 class="text-xl font-semibold">{{ item.movie.title }} <span class="text-gray-600">({{ item.movie.release_date.year }})</span></h2>
+          </div>
+          <div class="flex items-center justify-start mt-4">
+            <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927C9.326 2.029 10.674 2.029 10.951 2.927L12.388 7.527C12.515 7.97 12.939 8.245 13.388 8.245H18.127C19.089 8.245 19.473 9.445 18.723 10.027L14.968 12.867C14.597 13.16 14.432 13.665 14.559 14.109L16.05 18.777C16.33 19.676 15.347 20.416 14.601 19.845L10.7 16.934C10.305 16.621 9.695 16.621 9.3 16.934L5.399 19.845C4.653 20.416 3.67 19.676 3.95 18.777L5.441 14.109C5.568 13.665 5.403 13.16 5.032 12.867L1.277 10.027C0.527 9.445 0.911 8.245 1.873 8.245H6.612C7.061 8.245 7.485 7.97 7.612 7.527L9.049 2.927Z"></path>
+            </svg>
+            {% if item.average_rating %}
+              <p class="text-yellow-500 ml-2">{{ item.average_rating|floatformat:2 }}</p>
+            {% else %}
+              <p class="text-gray-500 ml-2">N/A</p>
+            {% endif %}
+          </div>
         </div>
       </div>
     {% endfor %}

@@ -7,11 +7,11 @@
             class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         </div>
     </div>
-    <nav class="mt-2">
+    <nav class="mt-2 mb-4">
         <ul class="flex space-x-20">
             {% if user.is_authenticated %}
             <li>
-                <p class="text-blue-700 hover:text-indigo-700" >{{ user.username }}</p>
+                <a href="{% url 'user_view' user.id %}" class="text-blue-700 hover:text-indigo-700" >{{ user.username }}</a>
             </li>
             {% else %}
             <li>
@@ -20,6 +20,9 @@
             {% endif %}
             <li>
                 <a class="text-blue-700 hover:text-indigo-700" href="{% url 'index' %}">Movies</a>
+            </li>
+            <li>
+                <a class="text-blue-700 hover:text-indigo-700" href="{% url 'discover_view' %}">Discover</a>
             </li>
             {% if user.is_authenticated %}
             <li>

@@ -1,0 +1,26 @@
+{% extends "movies/base.html" %}
+
+{% block article %}
+  <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <img src="https://image.tmdb.org/t/p/w200/{{ person.poster_path }}" alt="{{ person.name }}" class="rounded-full mx-auto w-32 h-40 mb-4">
+    <h2 class="text-2xl font-semibold text-gray-800 text-center mb-4">{{ person.name }}</h2>
+    <p class="text-gray-600">{{ person.biography }}</p>
+  </div>
+  <section class="overflow-x-auto">
+        <h2 class="text-xl font-bold underline text-center text-gray-800 py-8">Worked In</h2>
+        <div class="flex flex-wrap justify-center gap-6">
+          {% for credit in credits %}
+          <a href="{% url 'movie_detail' credit.movie.id%}" class="flex-shrink-0">
+              <div class="bg-gray-100 rounded-lg shadow-md flex flex-col items-center p-4 w-48">
+                <img class="rounded-lg shadow-lg w-64 h-64 object-cover" src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{ credit.movie.poster_path }}" alt="{{ movie.title }}">
+                <div class="mt-4">
+                  <h3 class="text-lg font-semibold text-gray-800">{{ credit.movie.title }}</h3>
+                  <p class="text-sm text-gray-600">{{ credit.job.name }}</p>
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+  </section>
+
+{% endblock article %}
