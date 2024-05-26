@@ -1,27 +1,31 @@
+from django.contrib.auth.models import User
 from django.db.models.fields import forms
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
-from movies.models import Movie
+from django.utils.translation import deactivate
+from movies.models import Genre, Movie, MovieCredit, Person, MovieReview
 from django.contrib import messages
 from .forms import NameForm, MovieReviewForm
 # Create your views here.
 
 def movie_review(request, movie_id):
+    movie = Movie.objects.get(pk=movie_id)
     if request.method == 'POST':
         form = MovieReviewForm(request.POST)
         if form.is_valid():
-            movie_id = form.cleaned_data['movie_id']
             rating = form.cleaned_data['rating']
-            description = form.cleaned_data['description']
-            movie = Movie.objects.get(pk=movie_id)
+            description = form.cleaned_data['review']
             user = request.user
-            MovieReviewForm.objects.create(movie=movie, user=user, rating=rating, description=description)
-            return redirect('movie_detail', movie_id)
-    else:
-        form = MovieReviewForm()
-    return render(request, 'movies/review_form.html', {'form': form})
-
+            movieReview = MovieReview(user=user, movie=movie, rating=rating, review=description)
+            movieReview.save()
+            return redirect('movie_detail', movie_id )
+        else:
+            return render(request, 'movies/movie_detail.html', {'movie': movie, 'form': form})
+    
+    # Handle GET or other methods
+    form = MovieReviewForm()
+    return render(request, 'movies/movie_detail.html', {'movie': movie, 'form': form})
 
 def login_view(request):
     if request.method == 'POST':
@@ -41,6 +45,12 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+def user_view(request, user_id):
+    user = User.objects.get(pk=user_id)
+    reviews = user.moviereview_set.all()
+    context = {'reviews': reviews, 'user': user}
+    return render(request, 'movies/user_detail.html', context)
 
 def get_name(request):
     # if this is a POST request we need to process the form data
@@ -63,15 +73,51 @@ def get_name(request):
 
     return render(request, "movies/name.html", {"form": form})
 
-
 def index(request):
     movies = Movie.objects.all()
-    context = {'movie_list': movies}
+    movie_list = [{
+        'movie': movie,
+        'average_rating': movie.get_average_rating()
+    } for movie in movies]
+    context = {'movie_list': movie_list}
     return render(request, "movies/index.html", context=context)
+
+
+def discover_view(request):
+    genre_id = request.GET.get('genre')
+    if genre_id:
+        movies = Movie.objects.filter(genres__id=genre_id).order_by('-release_date')
+    else:
+        movies = Movie.objects.all().order_by('-release_date')
+
+    genres = Genre.objects.all()
+
+    context = {
+        'movie_list': movies,
+        'genres': genres,
+    }
+    return render(request, 'movies/discover.html', context)
+
+
 
 def movie_detail(request, movie_id):
     movie = Movie.objects.get(pk=movie_id)
-    context = {'movie': movie}
+    credits = MovieCredit.objects.filter(movie_id=movie_id)
+    reviews = MovieReview.objects.filter(movie_id=movie_id)
+    average_rating = movie.get_average_rating()
+    context = {
+        'movie': movie,
+        'credits': credits,
+        'reviews': reviews,
+        'average_rating': average_rating
+    }
     return render(request, "movies/movie_detail.html", context=context)
 
-
+def actor_detail(request, name):
+    actor = Person.objects.filter(name=name).first()
+    credits = MovieCredit.objects.filter(person_id=actor.id)
+    context = {
+        'person': actor,
+        'credits': credits,
+    }
+    return render(request, "movies/actor_detail.html", context)
