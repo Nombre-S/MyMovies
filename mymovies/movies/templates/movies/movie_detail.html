@@ -4,6 +4,7 @@
 <article class="container mx-auto p-6 bg-white shadow-lg rounded-lg">
   <div class="flex justify-center mb-6">
     <h1 class="text-3xl font-bold">{{ movie.title }} <span class="text-black-600">({{ movie.release_date|date:"Y" }})</span></h1>
+    <p class="bg-indigo-500 text-white rounded-full px-3 py-1 ml-4">Average Rating: {{ average_rating }}</p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -20,7 +21,7 @@
       <div class="mb-4">
         <h2 class="text-2xl font-semibold">Details</h2>
         <ul class="flex flex-wrap gap-2 text-gray-600">
-          <li class="bg-gray-200 rounded px-2 py-1">Released: {{ movie.release_date|date:"m/d/Y" }}</li>
+          <li class="bg-gray-200 rounded px-2 py-1">Released: {{ movie.release_date|date:"d/m/Y" }}</li>
           <li class="bg-gray-200 rounded px-2 py-1">Runtime: {{ movie.running_time }} mins</li>
           {% for genre in movie.genres.all %}
             <li class="bg-gray-200 rounded px-2 py-1">{{ genre.name }}</li>
@@ -36,35 +37,62 @@
         </div>
       </div>
 
+      <section class="overflow-x-auto">
+        <h2 class="text-xl font-bold underline text-center text-gray-800 py-8">Movie Cast</h2>
+        <div class="flex flex-wrap justify-center gap-6">
+          {% for credit in credits %}
+          <a href="{% url 'actor_detail' credit.person.name %}" class="flex-shrink-0">
+              <div class="bg-gray-100 rounded-lg shadow-md flex flex-col items-center p-4 w-48">
+                <img src="https://image.tmdb.org/t/p/w500/{{ credit.person.poster_path }}" alt="Imagen de Casting" class="rounded-full w-24 h-24 object-cover">
+                <div class="mt-4">
+                  <h3 class="text-lg font-semibold text-gray-800">{{ credit.person.name }}</h3>
+                  <p class="text-sm text-gray-600">{{ credit.job.name }}</p>
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      </section>
+
+      {% if user.is_authenticated %}
       <!-- Space for Review -->
       <div class="bg-gray-100 p-4 rounded-lg shadow-inner mt-6">
-        <h2 class="cursor-pointer font-semibold text-gray-700">Add a Review</h2>
-        <form action="{% url 'movie_review' movie.id %}" method="post">
+          <h2 class="text-2xl font-semibold text-gray-700 mb-4">Add a Review</h2>
+          <form action="/movies/{{ movie.id }}/review/submit/" method="post">
           {% csrf_token %}
-          <input type="hidden" name="movie_id" value="{{ movie.id }}">
-          <label for="rating">Rating:</label>
-          <input type="number" id="rating" name="rating" min="1" max="100" required class="block w-full mb-4">
-          <label for="description">Description:</label>
-          <textarea id="description" name="description" rows="4" cols="50" class="block w-full mb-4"></textarea>
+          <div class="mb-4">
+            <label for="rating" class="block text-gray-700 font-bold mb-2">Rating:</label>
+            <input type="number" id="rating" name="rating" min="1" max="100" required class="block w-full p-2 border rounded mb-4">
+          </div>
+          <div class="mb-4">
+            <label for="review" class="block text-gray-700 font-bold mb-2">Description:</label>
+            <textarea id="review" name="review" rows="4" cols="50" class="block w-full p-2 border rounded mb-4"></textarea>
+          </div>
           <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">Submit Review</button>
         </form>
       </div>
       <!-- End Space for Review -->
+      {% else %}
+      <div class="bg-gray-100 p-4 rounded-lg shadow-inner mt-6">
+          <p><a href="{% url 'login_view' %}" class="text-indigo-600 hover:underline">Sign In</a> to leave a review</p>
+      </div>
+      {% endif %}
 
       <!-- Display Existing Reviews -->
       <div class="bg-gray-100 p-4 rounded-lg shadow-inner mt-6">
-        <h2 class="cursor-pointer font-semibold text-gray-700">Existing Reviews</h2>
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Existing Reviews</h2>
         {% if reviews %}
-          <ul>
+          <ul class="space-y-4">
             {% for review in reviews %}
-              <li>
-                <p>Rating: {{ review.rating }}</p>
-                <p>Description: {{ review.description }}</p>
+              <li class="p-4 border rounded-lg bg-white shadow-md mb-4">
+                <p class="text-gray-800 font-semibold">User: <a href="{% url 'user_view' review.user.id %}" class="text-indigo-600 hover:underline">{{ review.user.username }}</a></p>
+                <p class="text-gray-600">Rating: {{ review.rating }}</p>
+                <p class="text-gray-600">Description: {{ review.review }}</p>
               </li>
             {% endfor %}
           </ul>
         {% else %}
-          <p>No reviews available.</p>
+          <p class="text-gray-600">No reviews available.</p>
         {% endif %}
       </div>
       <!-- End Display Existing Reviews -->
